@@ -6,7 +6,6 @@
 1. Flask 1.1.1
 2. Python3
 3. SQLalchemy 1.1.1
-4. 
 
 
 ## Decriptions
