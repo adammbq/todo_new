@@ -29,8 +29,9 @@ def home():
         except:
             return "There was an issue assing your task"
     else:
-        tasks = Todo.query.order_by(Todo.date_created).all()
-        return render_template('home.html', tasks=tasks)
+        u_tasks = Todo.query.filter_by(completed=0).all()
+        c_tasks = Todo.query.filter_by(completed=1).all()
+        return render_template('home.html', u_tasks=u_tasks, c_tasks=c_tasks)
     
 
 @app.route('/delete/<int:id>')
@@ -53,29 +54,39 @@ def update(id):
             return redirect('/')
         except:
             return "There was a problem deleting that task"
-
     else:
         return render_template('update.html', task=task_to_update)
+
+@app.route('/complete/<int:id>')
+def complete(id):
+    task_to_complete = Todo.query.get_or_404(id)
+    task_to_complete.completed = 1
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return "There was a problem completing that task"
+
+
+@app.route('/uncomplete/<int:id>')
+def uncomplete(id):
+    task_to_complete = Todo.query.get_or_404(id)
+    task_to_complete.completed = 0
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return "There was a problem completing that task"
+
+
+
 
 @app.route('/about')
 def about():
     return 'About page'
 
-@app.route('/tasks')
-def tasks():
-    return 'show all tasks'
 
-@app.route('/tasks/new_task')
-def newTasks():
-    return 'input new task'
 
-@app.route('/tasks/remove_task')
-def removeTasks():
-    return 'remove task'
-
-@app.route('/tasks/modify_task')
-def modifyTasks():
-    return 'modify task'
 
 if __name__ == '__main__':
     app.run(debug=True)
